@@ -31,7 +31,7 @@ void executeFindNextFileTest()
 
 
 	auto preFindFirstFileT = Clock::now();
-	// TODO: would we ever need to switch to ansi versions?
+	// TODO: would we ever need to support ANSI alternative? - in/out types are different
 	HANDLE handle = FindFirstFile(parentPath, &findData);
 	if (handle == INVALID_HANDLE_VALUE || handle == NULL)
 	{
@@ -60,16 +60,16 @@ void executeFindNextFileTest()
 	auto doneT = Clock::now();
 	printf("Loop: %lu\n", toMs(doneT - preloopT));
 	printf("Loop w/ initial find: %lu\n", toMs(doneT - preFindFirstFileT));
-	printf("num files: %d\n", files.size());
+	printf("num files: %u\n", files.size());
 
 
 	auto lastError = GetLastError();
 	if (lastError == ERROR_NO_MORE_FILES)
 	{
-		printf("no more files\n");
+		return;
 	}
 	else
 	{
-		printf("other error\n");
+		printf("error: %u\n", lastError);
 	}
 }

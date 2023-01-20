@@ -9,6 +9,5 @@ int main()
 {
     init_apartment();
 
-
     executeFindNextFileTest();
 }
