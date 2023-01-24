@@ -4,16 +4,16 @@
 #include <iostream>
 #include "Utils.h"
 
-void executeFindNextFileTest()
+void executeFindNextFileTest(std::wstring searchPath)
 {
-	// Replace this with a test folder
-	LPCWSTR parentPath = L"E:\\bigFolders\\20k\\*";
+	searchPath += L"/*";
+	LPCWSTR parentPath = searchPath.c_str();
 
 	WIN32_FIND_DATAW findData;
 
 	auto preFindFirstFileT = Clock::now();
-	// TODO: would we ever need to support ANSI alternative? - in/out types are different.
 
+	// TODO: would we ever need to support ANSI alternative? - in/out types are different.
 	HANDLE handle = FindFirstFile(parentPath, &findData);
 
 	// Tried this alternative API that provides more options: ~5x slower for some reason
@@ -49,7 +49,6 @@ void executeFindNextFileTest()
 
 			if (dummyFileName == tmp)
 			{
-				// This test may not be an effective simulation due to branch prediction maybe skipping it
 				printf("This conditional block is just to simulate a check we may have to do");
 			}
 
@@ -66,16 +65,13 @@ void executeFindNextFileTest()
 	printf("Loop w/ initial find: %lu\n", toMs(doneT - preFindFirstFileT));
 	printf("num files: %zu\n", files.size());
 	
+	// Sample sorting code
 	auto preloop2T = Clock::now();
-	for (int i = 0; i < files.size(); i++)
-	{
-		if (dummyFileName == files[i].cFileName)
-		{
-			printf("This conditional block is just to simulate a check we may have to do");
-		}
-	}
+	std::sort(files.begin(), files.end(),
+		[](auto const& a, auto const& b) { return fileTimeTo100Ns(a.ftCreationTime) < fileTimeTo100Ns(b.ftCreationTime); });
 	auto loop2DoneT = Clock::now();
-	printf("Loop 2: %lu\n", toMs(loop2DoneT - preloop2T));
+
+	printf("Sorting time: %lu\n", toMs(loop2DoneT - preloop2T));
 
 	auto lastError = GetLastError();
 	if (lastError == ERROR_NO_MORE_FILES)

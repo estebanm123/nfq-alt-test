@@ -11,7 +11,9 @@ int main()
     init_apartment();
 
 
+    // Replace this with a test folder
     std::wstring searchPath = L"E:/bigFolders/20k";
-    //executeFindNextFileTest();
-    executeWinSearchIndexerTest(searchPath);
+
+    executeFindNextFileTest(searchPath);
+    //executeWinSearchIndexerTest(searchPath);
 }

@@ -18,3 +18,13 @@ inline long toMs(std::chrono::nanoseconds t)
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(t).count();
 }
+
+inline unsigned long fileTimeTo100Ns(const FILETIME& ac_FileTime)
+{
+	ULARGE_INTEGER lv_Large;
+
+	lv_Large.LowPart = ac_FileTime.dwLowDateTime;
+	lv_Large.HighPart = ac_FileTime.dwHighDateTime;
+
+	return lv_Large.QuadPart;
+}

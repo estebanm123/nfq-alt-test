@@ -1,3 +1,3 @@
 #pragma once
 
-void executeFindNextFileTest();
+void executeFindNextFileTest(std::wstring searchPath);
