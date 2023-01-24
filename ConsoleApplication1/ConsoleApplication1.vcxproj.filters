@@ -21,6 +21,12 @@
     <ClInclude Include="FindNextFileTest.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="WinSearchIndexerTest.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -30,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FindNextFileTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinSearchIndexerTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
