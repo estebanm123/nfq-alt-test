@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NfqApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "NfqApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
