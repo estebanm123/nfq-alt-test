@@ -61,9 +61,6 @@ void executeFindNextFileTest(std::wstring searchPath)
 		hasNext = FindNextFile(handle, &findData);
 	} while (hasNext);
 	auto doneT = Clock::now();
-	printf("Loop: %lu\n", toMs(doneT - preloopT));
-	printf("Loop w/ initial find: %lu\n", toMs(doneT - preFindFirstFileT));
-	printf("num files: %zu\n", files.size());
 	
 	// Sample sorting code
 	auto preloop2T = Clock::now();
@@ -71,7 +68,10 @@ void executeFindNextFileTest(std::wstring searchPath)
 		[](auto const& a, auto const& b) { return fileTimeTo100Ns(a.ftCreationTime) < fileTimeTo100Ns(b.ftCreationTime); });
 	auto loop2DoneT = Clock::now();
 
+	printf("Loop: %lu\n", toMs(doneT - preloopT));
+	printf("Loop w/ initial find: %lu\n", toMs(doneT - preFindFirstFileT));
 	printf("Sorting time: %lu\n", toMs(loop2DoneT - preloop2T));
+	printf("FileCount: %lu\n", files.size());
 
 	auto lastError = GetLastError();
 	if (lastError == ERROR_NO_MORE_FILES)

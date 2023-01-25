@@ -12,11 +12,12 @@ int main()
     init_apartment();
 
     // Replace this with a test folder
-    auto searchPaths = std::vector<std::wstring>{ L"E:/bigFolders/1k", L"E:/bigFolders/20k", L"E:/bigFolders/100k"};
+    auto searchPaths = std::vector<std::wstring>{L"E:/bigFolders/1k", L"E:/bigFolders/20k", L"E:/bigFolders/100k"};
+    //auto searchPaths = std::vector<std::wstring>{ L"C:/Users/emargaron/OneDrive - Microsoft/Pictures" };
 
     for (auto const& searchPath : searchPaths)
     {
-        printf("Executing tests: %ws\n", searchPath);
+        printf("-----------------Executing tests: %ls\n", searchPath.c_str());
 
 		executeFindNextFileTest(searchPath);
         printf("\n");

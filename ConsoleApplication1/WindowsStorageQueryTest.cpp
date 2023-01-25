@@ -26,7 +26,7 @@ WF::IAsyncAction executeAsync(std::wstring const& searchPath, WS::Search::Indexe
 		
 		auto preQueryCreationT = Clock::now();
 		WS::Search::QueryOptions options(WS::Search::CommonFileQuery::DefaultQuery, {});
-		options.IndexerOption(WS::Search::IndexerOption::OnlyUseIndexerAndOptimizeForIndexedProperties);
+		options.IndexerOption(indexerOption);
 		auto query = folder.CreateFileQueryWithOptions(options);
 		auto postQueryCreationT = Clock::now();
 
@@ -62,7 +62,7 @@ void executeWinStorageFolderQueryTest(std::wstring searchPath)
 	printf("executing WinStorageFolderQueryTest - without indexer usage\n");
 	auto promise = executeAsync(searchPath, WS::Search::IndexerOption::DoNotUseIndexer);
 	promise.get();
-	printf("executing WinStorageFolderQueryTest - with attempted indexer usage\n");
-	promise = executeAsync(searchPath, WS::Search::IndexerOption::UseIndexerWhenAvailable);
+	printf("executing WinStorageFolderQueryTest - with forced indexer usage\n");
+	promise = executeAsync(searchPath, WS::Search::IndexerOption::OnlyUseIndexer);
 	promise.get();
 }
