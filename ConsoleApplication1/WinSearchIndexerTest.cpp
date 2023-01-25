@@ -112,9 +112,8 @@ std::wstring generateQuery(std::wstring const& searchPath)
 
 void executeWinSearchIndexerTest(std::wstring const& searchPath)
 {
-    // TODO: parameterize
     auto query = generateQuery(searchPath);
-	printf("Query: %ls \n", query.c_str());
+	//printf("Query: %ls \n", query.c_str());
 
     auto preQueryExecutionT = Clock::now();
     winrt::com_ptr<ICommandText> cmdTxt;
@@ -136,7 +135,7 @@ void executeWinSearchIndexerTest(std::wstring const& searchPath)
     auto preFetchT = Clock::now();
     do
     {
-        HROW rowBuffer[5000] = {}; // Request enough large batch to increase efficiency
+		HROW rowBuffer[5000] = {}; // Request enough large batch to increase efficiency
         HROW* rowReturned = rowBuffer;
 
         THROW_IF_FAILED(resultRows->GetNextRows(DB_NULL_HCHAPTER, 0, ARRAYSIZE(rowBuffer), &rowCountReturned, &rowReturned));
