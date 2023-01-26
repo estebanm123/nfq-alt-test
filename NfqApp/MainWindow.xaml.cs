@@ -16,6 +16,7 @@ namespace NfqApp
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
             myButton.Content = "Clicked";
+            var sortColumns = FileExplorerHelper.GetSortColumns("C:\\Users\\sachaple\\Pictures\\Unsplash");
         }
     }
 }
