@@ -1,0 +1,8 @@
+namespace NfqLib
+{
+    [default_interface]
+    runtimeclass FileExplorerHelper
+    {
+        static Windows.Foundation.Collections.IVector<String> GetSelectedFiles();
+    }
+}

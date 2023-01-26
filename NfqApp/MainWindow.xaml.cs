@@ -15,7 +15,6 @@ namespace NfqApp
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
-            Class myClass = new Class();
             myButton.Content = "Clicked";
         }
     }
