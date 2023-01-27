@@ -41,6 +41,11 @@ WF::IAsyncAction executeAsync(std::wstring const& searchPath, WS::Search::Indexe
 		auto preQueryExecutionT = Clock::now();
 		auto files = co_await query.GetFilesAsync();
 		auto postQueryExecutionT = Clock::now();
+
+		//for (auto const& file : files)
+		//{
+		//	printf("file name: %ls\n", file.Name().c_str());
+		//}
 ;
 		printf("items queried: %d\n", files.Size());
 		printf("GetFolderFromPathAsync %lu \n", toMs(postFolderFetchT - preFolderFetchT));

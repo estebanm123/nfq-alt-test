@@ -20,12 +20,19 @@ inline long toMs(std::chrono::nanoseconds t)
 	return std::chrono::duration_cast<std::chrono::milliseconds>(t).count();
 }
 
-inline unsigned long fileTimeTo100Ns(const FILETIME& ac_FileTime)
+inline long toUs(std::chrono::nanoseconds t)
 {
-	ULARGE_INTEGER lv_Large;
-
-	lv_Large.LowPart = ac_FileTime.dwLowDateTime;
-	lv_Large.HighPart = ac_FileTime.dwHighDateTime;
-
-	return lv_Large.QuadPart;
+	return std::chrono::duration_cast<std::chrono::microseconds>(t).count();
 }
+
+
+inline unsigned long fileTimeTo100Ns(const FILETIME& fileTime)
+{
+	return fileTime.dwLowDateTime | (static_cast<uint64_t>(fileTime.dwHighDateTime) << 32);
+}
+
+// These govern the amount of items queried by LB's StorageFileProvider
+inline constexpr uint32_t FirstLoadStorageFileCount{ 16 };
+inline constexpr uint32_t QuickLoadStorageFileCount{ 32 };
+inline constexpr uint32_t BulkLoadStorageFileCount{ 100 };
+
