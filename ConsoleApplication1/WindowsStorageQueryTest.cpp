@@ -39,7 +39,7 @@ WF::IAsyncAction executeAsync(std::wstring const& searchPath, WS::Search::Indexe
 		auto postFindIdxT = Clock::now();
 
 		auto preQueryExecutionT = Clock::now();
-		auto files = co_await query.GetFilesAsync();
+		auto files = co_await query.GetFilesAsync(0, 100);
 		auto postQueryExecutionT = Clock::now();
 
 		//for (auto const& file : files)

@@ -2,14 +2,19 @@
 #include "FindNextFileTest.h"
 #include <windows.h>
 #include <iostream>
-#include "Utils.h"
-#include "winrt/Windows.Storage.h"
-#include "winrt/Windows.Foundation.h"
 #include <shobjidl.h>
 #include <propvarutil.h>
 #include <propkey.h>
 #include <shobjidl.h>
+#include <thumbnailstreamcache.h>
+#include <shcore.h>
+#include "winrt/Windows.Storage.Streams.h"
+#include "winrt/Windows.Storage.h"
+#include "winrt/Windows.Foundation.h"
 #include <winrt/Windows.Storage.FileProperties.h>
+#include "Utils.h"
+
+constexpr uint32_t RequestedThumbnailSize = 1280;
 
 namespace WS = winrt::Windows::Storage;
 namespace WF = winrt::Windows::Foundation;
@@ -19,18 +24,40 @@ struct TestImageProps
 	uint32_t width;
 	uint32_t height;
 	uint64_t dateTaken;
+	uint64_t thumbCacheId;
 };
 
-void fetchWin32PropsTest(
+void executeWin32MediaLoadingAltTest(
+	uint32_t activatedFileIdx,
+	std::wstring const& activatedFilePath,
+	std::wstring const& searchPath,
+	std::vector<WIN32_FIND_DATA> const& files)
+{
+	auto preShellItemInitT = Clock::now();
+	winrt::com_ptr<IShellItem> shellItem;
+	auto hr = SHCreateItemFromParsingName(activatedFilePath.c_str(), NULL, IID_PPV_ARGS(&shellItem));
+	if (FAILED(hr))
+	{
+		printf("Error creating shell item");
+	}
+
+	auto postShellItemInitT = Clock::now();
+	printf("Creating shell item: %lu us", toUs(postShellItemInitT - preShellItemInitT));
+}
+
+void executeWin32MediaLoadingTest(
 	uint32_t activatedFileIdx, 
 	std::wstring const& activatedFilePath, 
 	std::wstring const& searchPath,
 	std::vector<WIN32_FIND_DATA> const& files)
 {
-	// TODO: test on dehyrdated files
 	auto prePropStoreFetchT = Clock::now();
 	winrt::com_ptr<IPropertyStore> propStore;
-	SHGetPropertyStoreFromParsingName(activatedFilePath.c_str(), NULL, GPS_DEFAULT, IID_PPV_ARGS(&propStore));
+	auto hr = SHGetPropertyStoreFromParsingName(activatedFilePath.c_str(), NULL, GPS_DEFAULT, IID_PPV_ARGS(&propStore));
+	if (FAILED(hr))
+	{
+		printf("Error fetching propertystore");
+	}
 	auto postPropStoreFetchT = Clock::now();
 
 	std::vector < winrt::com_ptr<IPropertyStore>> propStores;
@@ -39,7 +66,11 @@ void fetchWin32PropsTest(
 	{
 		auto filePath = searchPath + L"\\" + files[i].cFileName;
 		winrt::com_ptr<IPropertyStore> pStore;
-		SHGetPropertyStoreFromParsingName(filePath.c_str(), NULL, GPS_DEFAULT, IID_PPV_ARGS(&pStore));
+		auto hr = SHGetPropertyStoreFromParsingName(activatedFilePath.c_str(), NULL, GPS_DEFAULT, IID_PPV_ARGS(&propStore));
+		if (FAILED(hr))
+		{
+			printf("Error fetching propertystore");
+		}
 		propStores.push_back(pStore);
 	}
 	auto postPropGroupStoreFetchT = Clock::now();
@@ -71,44 +102,134 @@ void fetchWin32PropsTest(
 	}
 	auto postDateTakenPropFetchT = Clock::now();
 
+	auto preThumbCacheIdPropFetchT = Clock::now();
+	hrGetValue = propStore->GetValue(PKEY_ThumbnailCacheId, &propvarValue);
+	if (SUCCEEDED(hrGetValue))
+	{
+		props.thumbCacheId = propvarValue.uintVal;
+		PropVariantClear(&propvarValue);
+	}
+	auto postThumbCacheIdPropFetchT = Clock::now();
+
+	auto preStorageProviderPropFetchT = Clock::now();
+	hrGetValue = propStore->GetValue(PKEY_StorageProviderId, &propvarValue);
+	if (SUCCEEDED(hrGetValue))
+	{
+		props.thumbCacheId = propvarValue.uintVal;
+		PropVariantClear(&propvarValue);
+	}
+	auto postStorageProviderPropFetchT = Clock::now();
+
 	printf("single prop store fetch time: %lu ms\n", toMs(postPropStoreFetchT - prePropStoreFetchT));
 	printf("prop store group fetch time: %lu ms\n", toMs(postPropGroupStoreFetchT - prePropGroupStoreFetchT));
 	printf("size: %lu ms\n", propStores.size());
 	printf("dimensions fetch time %lu us\n", toUs(postDimPropFetchT - preDimPropFetchT));
 	printf("datetaken fetch time: %lu us\n", toUs(postDateTakenPropFetchT - preDateTakenPropFetchT));
+	printf("provider id fetch time: %lu us\n", toUs(postStorageProviderPropFetchT - preStorageProviderPropFetchT));
+	printf("thumbCacheId fetch time: %lu us\n", toUs(postThumbCacheIdPropFetchT - preThumbCacheIdPropFetchT));
+
+	printf("\n");
+	auto preThumbCacheFetchT = Clock::now();
+	winrt::com_ptr<IThumbnailStreamCache> cache;
+	auto hrCreateCache = CoCreateInstance(__uuidof(ThumbnailStreamCache), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&cache));
+	if (FAILED(hrCreateCache))
+	{
+		printf("Error fetching thumb cache: %d\n", hrCreateCache);
+		return;
+	}
+	auto postThumbCacheFetchT = Clock::now();
+
+	auto preThumbFetchT = Clock::now();
+	winrt::com_ptr<IStream> cacheThumbnailIStream;
+	// TODO: try extractifnotcached - this is used for filmstrip small icon thumbs? vs placeholder uses allowsmallersize
+	ThumbnailStreamCacheOptions thumbnailOptions = ThumbnailStreamCacheOptions::AllowSmallerSize; // ThumbnailStreamCacheOptions::ExtractIfNotCached;
+	SIZE actualSize{ 0,0 };
+	auto hrGetStream = cache->GetThumbnailStream(activatedFilePath.c_str(), props.thumbCacheId, thumbnailOptions, RequestedThumbnailSize, &actualSize, cacheThumbnailIStream.put());
+	if (FAILED(hrGetStream))
+	{
+		printf("Error fetching thumb from cache: %d\n", hrGetStream);
+		return;
+	}
+	auto postThumbFetchT = Clock::now();
+
+	auto preThumbRasConvertT = Clock::now();
+	winrt::com_ptr<WS::Streams::IRandomAccessStream> randomAccessStream;
+	auto streamIID{ winrt::guid_of<WS::Streams::IRandomAccessStream>() };
+	auto hrCreateStream = CreateRandomAccessStreamOverStream(cacheThumbnailIStream.get(), BSOS_DEFAULT, streamIID, randomAccessStream.put_void());
+	if (FAILED(hrCreateStream))
+	{
+		printf("Error fetching thumb from cache: %d\n", hrCreateStream);
+	}
+	auto postThumbRasConvertT = Clock::now();
+
+	printf("thumb cache fetch time: %lu ms\n", toMs(postThumbCacheFetchT - preThumbCacheFetchT));
+	printf("thumb fetch time: %lu ms\n", toMs(postThumbFetchT - preThumbFetchT));
+	printf("stream creation: %lu ms\n", toMs(postThumbRasConvertT - preThumbRasConvertT));
+
+
+	auto preReadT = Clock::now();
+	IStream *stream = 0; // Todo: try using com_ptr
+	if (FAILED(SHCreateStreamOnFileEx(activatedFilePath.c_str(), STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, 0, &stream)))
+	{
+		printf("Failure reading stream\n");
+	}
+	auto postReadT = Clock::now();
+	// TODO: release stream
+	printf("SHCreateStreamOnFileEx: %lu ms", toMs(postReadT - preReadT));
 }
 
-WF::IAsyncAction fetchStorageFileAndPropsTest(
+WF::IAsyncAction executeStorageFileMediaLoadingTest(
 	uint32_t activatedFileIdx, 
 	std::wstring const& activatedFilePath, 
 	std::wstring const& searchPath,
 	std::vector<WIN32_FIND_DATA> const& files)
 {
 	auto preStorageFileFetchT = Clock::now();
-	auto file = co_await WS::StorageFile::GetFileFromPathAsync(activatedFilePath);
+	auto activatedFile = co_await WS::StorageFile::GetFileFromPathAsync(activatedFilePath);
 	auto postStorageFileFetchT = Clock::now();
 
-	auto preGroupStorageFileFetchT = Clock::now();
-	// Simulation of fetching StorageFile and Properties from property store
-	std::vector<WS::StorageFile> storageFiles;
+	auto preFirstLoadStorageFileFetchT = Clock::now();
+	std::vector<WS::StorageFile> firstLoadStorageFiles;
+	std::vector<WF::IAsyncOperation<WS::StorageFile>> promises;
 	for (auto i = activatedFileIdx - FirstLoadStorageFileCount / 2.f; i < activatedFileIdx + FirstLoadStorageFileCount / 2.f; i++)
 	{
 		auto filePath = searchPath + L"\\" + files[i].cFileName;
-		auto file = co_await WS::StorageFile::GetFileFromPathAsync(filePath);
-		storageFiles.push_back(file);
+		promises.push_back(WS::StorageFile::GetFileFromPathAsync(filePath));
 	}
-	auto postGroupStorageFileFetchT = Clock::now();
+	for (auto const& promise : promises)
+	{
+		auto file = co_await promise;
+		firstLoadStorageFiles.push_back(file);
+	}
+	auto postFirstLoadStorageFileFetchT = Clock::now();
+
+	promises.clear();
+
+	auto preBulkLoadStorageFileFetchT = Clock::now();
+	std::vector<WS::StorageFile> bulkLoadStorageFiles;
+	for (auto i = activatedFileIdx - BulkLoadStorageFileCount / 2.f; i < activatedFileIdx + BulkLoadStorageFileCount / 2.f; i++)
+	{
+		auto filePath = searchPath + L"\\" + files[i].cFileName;
+		promises.push_back(WS::StorageFile::GetFileFromPathAsync(filePath));
+	}
+	for (auto const& promise : promises)
+	{
+		auto file = co_await promise;
+		bulkLoadStorageFiles.push_back(file);
+	}
+	auto postBulkStorageFileFetchT = Clock::now();
+
 	printf("Single storageFile fetch: %lu\n", toMs(postStorageFileFetchT - preStorageFileFetchT));
-	printf("FirstLoad group StorageFile fetch: %lu\n", toMs(postGroupStorageFileFetchT - preGroupStorageFileFetchT));
-	printf("Num StorageFiles fetched: %lu\n", storageFiles.size());
+	printf("FirstLoad %u group StorageFile fetch: %lu\n", firstLoadStorageFiles.size(), toMs(postFirstLoadStorageFileFetchT - preFirstLoadStorageFileFetchT));
+	printf("BulkLoad %u group StorageFile fetch: %lu\n", bulkLoadStorageFiles.size(), toMs(postBulkStorageFileFetchT - preBulkLoadStorageFileFetchT));
 
 	auto prePropsFetchT = Clock::now();
-	auto imageProps = co_await file.Properties().GetImagePropertiesAsync();
+	auto imageProps = co_await activatedFile.Properties().GetImagePropertiesAsync();
 	auto postPropsFetchT = Clock::now();
 
 	auto preGroupPropsFetchT = Clock::now();
 	std::vector<WS::FileProperties::ImageProperties> propsList;
-	for (auto const& file : storageFiles)
+	for (auto const& file : firstLoadStorageFiles)
 	{
 		auto imageProps = co_await file.Properties().GetImagePropertiesAsync();
 		propsList.push_back(imageProps);
@@ -117,6 +238,19 @@ WF::IAsyncAction fetchStorageFileAndPropsTest(
 
 	printf("Image prop fetch: %lu\n", toMs(postPropsFetchT - prePropsFetchT));
 	printf("Group image prop fetch: %lu\n", toMs(postGroupPropsFetchT - preGroupPropsFetchT));
+
+
+	auto preThumbFetchT = Clock::now();
+	auto thumb = co_await activatedFile.GetThumbnailAsync(WS::FileProperties::ThumbnailMode::SingleItem, RequestedThumbnailSize, WS::FileProperties::ThumbnailOptions::None);
+	auto postThumbFetchT = Clock::now();
+
+	printf("Thumb fetch: %lu\n", toMs(postThumbFetchT - preThumbFetchT));
+
+	//auto preOpenT = Clock::now();
+	//auto stream = co_await activatedFile.OpenReadAsync();
+	//auto postOpenT = Clock::now();
+
+	//printf("OpenReadAsync: %lu\n", toMs(postOpenT - preOpenT));
 }
 
 std::vector<WIN32_FIND_DATA> executeQueryTest(std::wstring searchPath)
@@ -207,7 +341,8 @@ void executeFindNextFileTest(std::wstring searchPath)
 	auto activatedFilePath = searchPath + L"\\" + activatedFileData.cFileName;
 	printf("\n");
 	printf("Test activatd file: %ls\n", activatedFilePath.c_str());
-	fetchStorageFileAndPropsTest(randActivatedFileIdx, activatedFilePath, searchPath, files).get();
+	executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files).get();
 	printf("\n");
-	fetchWin32PropsTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
+	//executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
+	//executeWin32MediaLoadingAltTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 }
