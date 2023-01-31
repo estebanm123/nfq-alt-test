@@ -27,6 +27,14 @@ struct TestImageProps
 	uint64_t thumbCacheId;
 };
 
+
+WF::IAsyncOperation<WS::StorageFile> loadStorageFile(std::wstring path)
+{
+	co_await winrt::resume_background();
+
+
+}
+
 void executeWin32MediaLoadingAltTest(
 	uint32_t activatedFileIdx,
 	std::wstring const& activatedFilePath,
@@ -44,6 +52,8 @@ void executeWin32MediaLoadingAltTest(
 	auto postShellItemInitT = Clock::now();
 	printf("Creating shell item: %lu us", toUs(postShellItemInitT - preShellItemInitT));
 }
+
+
 
 void executeWin32MediaLoadingTest(
 	uint32_t activatedFileIdx, 
@@ -122,7 +132,7 @@ void executeWin32MediaLoadingTest(
 
 	printf("single prop store fetch time: %lu ms\n", toMs(postPropStoreFetchT - prePropStoreFetchT));
 	printf("prop store group fetch time: %lu ms\n", toMs(postPropGroupStoreFetchT - prePropGroupStoreFetchT));
-	printf("size: %lu ms\n", propStores.size());
+	printf("size: %lu\n", propStores.size());
 	printf("dimensions fetch time %lu us\n", toUs(postDimPropFetchT - preDimPropFetchT));
 	printf("datetaken fetch time: %lu us\n", toUs(postDateTakenPropFetchT - preDateTakenPropFetchT));
 	printf("provider id fetch time: %lu us\n", toUs(postStorageProviderPropFetchT - preStorageProviderPropFetchT));
@@ -343,6 +353,6 @@ void executeFindNextFileTest(std::wstring searchPath)
 	printf("Test activatd file: %ls\n", activatedFilePath.c_str());
 	executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files).get();
 	printf("\n");
-	//executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
+	executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 	//executeWin32MediaLoadingAltTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 }
