@@ -28,11 +28,13 @@ struct TestImageProps
 };
 
 
-WF::IAsyncOperation<WS::StorageFile> loadStorageFile(std::wstring path)
+WF::IAsyncOperation<WS::StorageFile> loadStorageFile(std::wstring path, bool useThreadPool)
 {
-	co_await winrt::resume_background();
-
-
+	if (useThreadPool)
+	{
+		co_await winrt::resume_background();
+	}
+	co_return co_await WS::StorageFile::GetFileFromPathAsync(path);
 }
 
 void executeWin32MediaLoadingAltTest(
@@ -192,7 +194,8 @@ WF::IAsyncAction executeStorageFileMediaLoadingTest(
 	uint32_t activatedFileIdx, 
 	std::wstring const& activatedFilePath, 
 	std::wstring const& searchPath,
-	std::vector<WIN32_FIND_DATA> const& files)
+	std::vector<WIN32_FIND_DATA> const& files,
+	bool useThreadPool)
 {
 	auto preStorageFileFetchT = Clock::now();
 	auto activatedFile = co_await WS::StorageFile::GetFileFromPathAsync(activatedFilePath);
@@ -204,7 +207,7 @@ WF::IAsyncAction executeStorageFileMediaLoadingTest(
 	for (auto i = activatedFileIdx - FirstLoadStorageFileCount / 2.f; i < activatedFileIdx + FirstLoadStorageFileCount / 2.f; i++)
 	{
 		auto filePath = searchPath + L"\\" + files[i].cFileName;
-		promises.push_back(WS::StorageFile::GetFileFromPathAsync(filePath));
+		promises.push_back(loadStorageFile(filePath, useThreadPool));
 	}
 	for (auto const& promise : promises)
 	{
@@ -220,7 +223,7 @@ WF::IAsyncAction executeStorageFileMediaLoadingTest(
 	for (auto i = activatedFileIdx - BulkLoadStorageFileCount / 2.f; i < activatedFileIdx + BulkLoadStorageFileCount / 2.f; i++)
 	{
 		auto filePath = searchPath + L"\\" + files[i].cFileName;
-		promises.push_back(WS::StorageFile::GetFileFromPathAsync(filePath));
+		promises.push_back(loadStorageFile(filePath, useThreadPool));
 	}
 	for (auto const& promise : promises)
 	{
@@ -351,8 +354,8 @@ void executeFindNextFileTest(std::wstring searchPath)
 	auto activatedFilePath = searchPath + L"\\" + activatedFileData.cFileName;
 	printf("\n");
 	printf("Test activatd file: %ls\n", activatedFilePath.c_str());
-	executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files).get();
+	executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files, true).get();
 	printf("\n");
-	executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
+	//executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 	//executeWin32MediaLoadingAltTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 }
