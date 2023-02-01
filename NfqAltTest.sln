@@ -7,9 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NfqLib", "NfqLib\NfqLib.vcxproj", "{C9419E76-E798-4E30-AF25-EFDD27432E25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfqProjection", "NfqProjection\NfqProjection.csproj", "{22CB4501-0F9F-4244-8CF3-51AED82A7C08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NfqProjection", "NfqProjection\NfqProjection.csproj", "{22CB4501-0F9F-4244-8CF3-51AED82A7C08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfqApp", "NfqApp\NfqApp.csproj", "{D31CAE38-75BF-41CE-9967-A31B296248D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NfqApp", "NfqApp\NfqApp.csproj", "{D31CAE38-75BF-41CE-9967-A31B296248D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
