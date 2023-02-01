@@ -1,16 +1,35 @@
-<!-- Copyright (c) Microsoft Corporation and Contributors. -->
-<!-- Licensed under the MIT License. -->
+<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
+<!--  Licensed under the MIT License.  -->
 
 <Window
     x:Class="NfqApp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:NfqApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lib="using:NfqLib"
+    xmlns:local="using:NfqApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Orientation="Vertical">
+        <Button x:Name="OpenFolderButton" Click="OpenFolderButton_Click">Open folder</Button>
+        <TextBlock Text="Sort order:" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
+        <TextBlock Text="{x:Bind local:MainWindow.TimeToRetrieveSortToString(TimeToRetrieveSort), Mode=OneWay}" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
+        <ListView ItemsSource="{x:Bind FileExplorerSortOrder, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="lib:FileExplorerSort">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                        <TextBlock Text="{x:Bind PropertyKey}" />
+                        <TextBlock Text="{x:Bind local:MainWindow.AscendingToString(Ascending)}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackPanel>
 </Window>
