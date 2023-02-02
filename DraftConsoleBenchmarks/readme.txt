@@ -1,5 +1,5 @@
 ========================================================================
-    C++/WinRT ConsoleApplication1 Project Overview
+    C++/WinRT DraftConsoleBenchmarks Project Overview
 ========================================================================
 
 This project demonstrates how to get started consuming Windows Runtime 
