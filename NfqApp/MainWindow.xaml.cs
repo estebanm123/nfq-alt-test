@@ -49,6 +49,14 @@ namespace NfqApp
                 var parentFolder = await storageItem2.GetParentAsync();
                 DisplaySortColumns(parentFolder);
             }
+
+
+            var benchmark = new StorageFileQueryBenchmark();
+            var benchmarkResults = await benchmark.Execute("E:/bigFolders/1k");
+            foreach (var result in benchmarkResults)
+            {
+                Debug.WriteLine(result.testName + ": " + result.duration);
+            }
         }
 
         private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)

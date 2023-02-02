@@ -1,0 +1,8 @@
+namespace NfqLib
+{
+	struct BenchmarkResult
+	{
+		String testName;
+		Windows.Foundation.TimeSpan duration;
+	};
+}

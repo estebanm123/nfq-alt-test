@@ -107,6 +107,11 @@
     <ClInclude Include="FileExplorerHelper.h">
       <DependentUpon>FileExplorerHelper.idl</DependentUpon>
     </ClInclude>
+    <ClInclude Include="QueryBenchmarkUtils.h" />
+    <ClInclude Include="StorageFileQueryBenchmark.h">
+      <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileExplorerSort.cpp">
@@ -120,10 +125,18 @@
       <DependentUpon>FileExplorerHelper.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="StorageFileQueryBenchmark.cpp">
+      <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="BenchmarkResult.idl" />
     <Midl Include="FileExplorerHelper.idl" />
     <Midl Include="FileExplorerSort.idl">
+      <SubType>Designer</SubType>
+    </Midl>
+    <Midl Include="StorageFileQueryBenchmark.idl">
       <SubType>Designer</SubType>
     </Midl>
   </ItemGroup>

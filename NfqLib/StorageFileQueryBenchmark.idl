@@ -1,0 +1,12 @@
+import "BenchmarkResult.idl";
+
+namespace NfqLib
+{
+    [default_interface]
+    runtimeclass StorageFileQueryBenchmark 
+    {
+        StorageFileQueryBenchmark();
+
+		Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector <BenchmarkResult> > Execute(String queryFolderPath);
+    }
+}
