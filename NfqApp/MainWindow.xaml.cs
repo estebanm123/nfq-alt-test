@@ -55,7 +55,7 @@ namespace NfqApp
             var benchmarkResults = await benchmark.Execute("E:/bigFolders/1k");
             foreach (var result in benchmarkResults)
             {
-                Debug.WriteLine(result.testName + ": " + result.duration);
+                Trace.WriteLine("!~: " + result.testName + ": " + result.duration.TotalMilliseconds);
             }
         }
 
