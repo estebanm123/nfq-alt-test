@@ -323,6 +323,12 @@ std::vector<WIN32_FIND_DATA> executeQueryTest(std::wstring searchPath)
 		hasNext = FindNextFile(handle, &findData);
 	} while (hasNext);
 	auto doneT = Clock::now();
+
+	auto lastError = GetLastError();
+	if (lastError != ERROR_NO_MORE_FILES)
+	{
+		printf("error: %u\n", lastError);
+	}
 	
 	// Sample sorting code
 	auto preloop2T = Clock::now();
@@ -335,11 +341,6 @@ std::vector<WIN32_FIND_DATA> executeQueryTest(std::wstring searchPath)
 	printf("Sorting time: %lu\n", toMs(loop2DoneT - preloop2T));
 	printf("FileCount: %lu\n", files.size());
 
-	auto lastError = GetLastError();
-	if (lastError != ERROR_NO_MORE_FILES)
-	{
-		printf("error: %u\n", lastError);
-	}
 	return files;
 }
 

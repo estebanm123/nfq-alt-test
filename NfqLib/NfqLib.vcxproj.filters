@@ -22,6 +22,12 @@
     <Midl Include="BenchmarkResult.idl">
       <Filter>QueryBenchmarkHelpers</Filter>
     </Midl>
+    <Midl Include="FindNextFileBenchmark.idl">
+      <Filter>QueryBenchmarkHelpers</Filter>
+    </Midl>
+    <Midl Include="OleDbQueryBenchmark.idl">
+      <Filter>QueryBenchmarkHelpers</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

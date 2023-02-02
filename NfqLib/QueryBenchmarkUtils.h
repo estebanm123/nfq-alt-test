@@ -21,12 +21,12 @@ inline const auto SupportedExtensions = std::unordered_set<std::wstring>{
 		L".dib", L".gif", L".jfif", L".jpe", L".jxr", L".wdp", L".ico", L".heic", L".heif", L".hif", L".avif", L".webp",
 };
 
-inline long ToMs(std::chrono::nanoseconds t)
+inline long long ToMs(std::chrono::nanoseconds t)
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(t).count();
 }
 
-inline long ToUs(std::chrono::nanoseconds t)
+inline long long ToUs(std::chrono::nanoseconds t)
 {
 	return std::chrono::duration_cast<std::chrono::microseconds>(t).count();
 }
@@ -52,9 +52,18 @@ inline TestFuncReturnType RunBenchmark(
 	return testFuncResult;
 }
 
-// These govern the amount of items queried by LB's StorageFileProvider
-inline constexpr uint32_t FirstLoadStorageFileCount{ 16 };
-inline constexpr uint32_t QuickLoadStorageFileCount{ 32 };
-inline constexpr uint32_t BulkLoadStorageFileCount{ 100 };
+inline void RunBenchmark(
+	winrt::hstring testName,
+	std::function<void()> testFunc,
+	WFC::IVector<BenchmarkResult>& results)
+{
+	auto preExecutionTime = Clock::now();
+	testFunc();
+	auto postExecutionTime = Clock::now();
+
+	auto duration = std::chrono::milliseconds(ToMs(postExecutionTime - preExecutionTime));
+	auto benchmarkResult = BenchmarkResult{ testName, duration };
+	results.Append(benchmarkResult);
+}
 
 

@@ -1,0 +1,13 @@
+import "BenchmarkResult.idl";
+
+namespace NfqLib
+{
+    [bindable]
+    [default_interface]
+    runtimeclass FindNextFileBenchmark 
+    {
+        FindNextFileBenchmark();
+
+		Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector <BenchmarkResult> > Execute(String queryFolderPath);
+    }
+}

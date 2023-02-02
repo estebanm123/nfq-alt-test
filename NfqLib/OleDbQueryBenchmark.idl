@@ -1,0 +1,13 @@
+import "BenchmarkResult.idl";
+
+namespace NfqLib
+{
+    [bindable]
+    [default_interface]
+    runtimeclass OleDbQueryBenchmark 
+    {
+        OleDbQueryBenchmark();
+
+		Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector <BenchmarkResult> > Execute(String queryFolderPath);
+    }
+}
