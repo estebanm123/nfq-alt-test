@@ -8,7 +8,7 @@ namespace winrt::NfqLib::implementation
 {
     struct FileExplorerHelper : FileExplorerHelperT<FileExplorerHelper>
     {
-        static Windows::Foundation::Collections::IVector<FileExplorerSort> GetSortColumns(const winrt::hstring& folderPath);
+        static Windows::Foundation::Collections::IVector<SortOrder> GetSortColumns(const winrt::hstring& folderPath);
 
     private:
         static winrt::com_ptr<IFolderView2> GetFolderView(const std::vector<winrt::com_ptr<IWebBrowserApp>>& webBrowserApps, const winrt::hstring& folderPath);

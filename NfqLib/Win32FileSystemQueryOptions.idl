@@ -1,0 +1,20 @@
+import "SortOrder.idl";
+
+namespace NfqLib
+{
+    [bindable]
+    [default_interface]
+    runtimeclass Win32FileSystemQueryOptions 
+    {
+        Win32FileSystemQueryOptions(
+            String folderPath, 
+            SortOrder sort, 
+            Windows.Foundation.Collections.IVector<String> fileTypeFilter, 
+            Boolean isRecursive);
+
+        String FolderPath{ get; };
+        SortOrder Sort{ get; };
+        Windows.Foundation.Collections.IVector<String> FileTypeFilter{ get; };
+        Boolean IsRecursive{ get; };
+    }
+}

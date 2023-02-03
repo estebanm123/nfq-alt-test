@@ -99,8 +99,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="FileExplorerSort.h">
-      <DependentUpon>FileExplorerSort.idl</DependentUpon>
+    <ClInclude Include="SortOrder.h">
+      <DependentUpon>SortOrder.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
     <ClInclude Include="FindNextFileBenchmark.h">
@@ -120,10 +120,14 @@
       <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="Win32FileSystemQueryOptions.h">
+      <DependentUpon>Win32FileSystemQueryOptions.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileExplorerSort.cpp">
-      <DependentUpon>FileExplorerSort.idl</DependentUpon>
+    <ClCompile Include="SortOrder.cpp">
+      <DependentUpon>SortOrder.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
     <ClCompile Include="FindNextFileBenchmark.cpp">
@@ -145,11 +149,15 @@
       <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="Win32FileSystemQueryOptions.cpp">
+      <DependentUpon>Win32FileSystemQueryOptions.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="BenchmarkResult.idl" />
     <Midl Include="FileExplorerHelper.idl" />
-    <Midl Include="FileExplorerSort.idl">
+    <Midl Include="SortOrder.idl">
       <SubType>Designer</SubType>
     </Midl>
     <Midl Include="FindNextFileBenchmark.idl">
@@ -159,6 +167,9 @@
       <SubType>Designer</SubType>
     </Midl>
     <Midl Include="StorageFileQueryBenchmark.idl">
+      <SubType>Designer</SubType>
+    </Midl>
+    <Midl Include="Win32FileSystemQueryOptions.idl">
       <SubType>Designer</SubType>
     </Midl>
   </ItemGroup>

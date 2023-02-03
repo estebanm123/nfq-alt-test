@@ -24,7 +24,7 @@ namespace NfqApp
         IStorageItem? activatedItem;
 
         [ObservableProperty]
-        IList<FileExplorerSort> fileExplorerSortOrder = new List<FileExplorerSort>();
+        IList<SortOrder> fileExplorerSortOrder = new List<SortOrder>();
 
         [ObservableProperty]
         TimeSpan timeToRetrieveSort;
@@ -34,7 +34,7 @@ namespace NfqApp
             InitializeComponent();
         }
 
-        public static Visibility HasSortOrder(IList<FileExplorerSort> fileExplorerSortOrder) => fileExplorerSortOrder.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        public static Visibility HasSortOrder(IList<SortOrder> fileExplorerSortOrder) => fileExplorerSortOrder.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public static string AscendingToString(bool isAscending) => isAscending ? "Ascending" : "Descending";
 

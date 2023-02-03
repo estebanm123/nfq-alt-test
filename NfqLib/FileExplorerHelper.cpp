@@ -4,7 +4,7 @@
 
 namespace winrt::NfqLib::implementation
 {
-    Windows::Foundation::Collections::IVector<FileExplorerSort> FileExplorerHelper::GetSortColumns(const winrt::hstring& folderPath)
+    Windows::Foundation::Collections::IVector<SortOrder> FileExplorerHelper::GetSortColumns(const winrt::hstring& folderPath)
     {
         std::vector<winrt::com_ptr<IWebBrowserApp>> webBrowserApps = GetWebBrowserAppsOrderedByZOrder();
         winrt::com_ptr<IFolderView2> folderView2 = GetFolderView(webBrowserApps, folderPath);
@@ -19,7 +19,7 @@ namespace winrt::NfqLib::implementation
         SORTCOLUMN columns[64];
         folderView2->GetSortColumns(columns, columnCount);
 
-        Windows::Foundation::Collections::IVector<FileExplorerSort> sortColumns = winrt::single_threaded_vector<FileExplorerSort>();
+        Windows::Foundation::Collections::IVector<SortOrder> sortColumns = winrt::single_threaded_vector<SortOrder>();
         for (int i = 0; i < columnCount; i++)
         {
             bool ascending = columns[0].direction > 0 ? true : false;
@@ -28,8 +28,8 @@ namespace winrt::NfqLib::implementation
             PSGetNameFromPropertyKey(columns[0].propkey, &sortProperty);
             winrt::hstring propertyKey{ sortProperty };
 
-            auto fileExplorerSort = FileExplorerSort(propertyKey, ascending);
-            sortColumns.Append(fileExplorerSort);
+            auto sortOrder = SortOrder(propertyKey, ascending);
+            sortColumns.Append(sortOrder);
         }
 
         return sortColumns;

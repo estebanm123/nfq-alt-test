@@ -2,9 +2,9 @@ namespace NfqLib
 {
     [bindable]
     [default_interface]
-    runtimeclass FileExplorerSort 
+    runtimeclass SortOrder 
     {
-        FileExplorerSort(String propertyKey, Boolean ascending);
+        SortOrder(String propertyKey, Boolean ascending);
         String PropertyKey{ get; };
         Boolean Ascending{ get; };
     }

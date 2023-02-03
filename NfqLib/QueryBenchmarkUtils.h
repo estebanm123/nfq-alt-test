@@ -65,5 +65,3 @@ inline void RunBenchmark(
 	auto benchmarkResult = BenchmarkResult{ testName, duration };
 	results.Append(benchmarkResult);
 }
-
-

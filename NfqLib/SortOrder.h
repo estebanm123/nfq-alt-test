@@ -1,12 +1,12 @@
 ﻿#pragma once
 
-#include "FileExplorerSort.g.h"
+#include "SortOrder.g.h"
 
 namespace winrt::NfqLib::implementation
 {
-    struct FileExplorerSort : FileExplorerSortT<FileExplorerSort>
+    struct SortOrder : SortOrderT<SortOrder>
     {
-        FileExplorerSort(const winrt::hstring& propertyKey, bool ascending);
+        SortOrder(const winrt::hstring& propertyKey, bool ascending);
 
         winrt::hstring PropertyKey();
         void PropertyKey(const winrt::hstring& propertyKey);
@@ -22,7 +22,7 @@ namespace winrt::NfqLib::implementation
 
 namespace winrt::NfqLib::factory_implementation
 {
-    struct FileExplorerSort : FileExplorerSortT<FileExplorerSort, implementation::FileExplorerSort>
+    struct SortOrder : SortOrderT<SortOrder, implementation::SortOrder>
     {
     };
 }

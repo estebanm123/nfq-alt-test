@@ -1,10 +1,10 @@
-import "FileExplorerSort.idl";
+import "SortOrder.idl";
 
 namespace NfqLib
 {
     [default_interface]
     runtimeclass FileExplorerHelper
     {
-        static Windows.Foundation.Collections.IVector<FileExplorerSort> GetSortColumns(String folderPath);
+        static Windows.Foundation.Collections.IVector<SortOrder> GetSortColumns(String folderPath);
     }
 }
