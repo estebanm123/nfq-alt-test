@@ -1,0 +1,19 @@
+import "Win32FileSystemQueryOptions.idl";
+
+namespace NfqLib
+{
+    delegate void FileSystemChangedEventHandler();
+
+    [bindable]
+    [default_interface]
+    runtimeclass Win32FileSystemQuery 
+    {
+        Win32FileSystemQuery(Win32FileSystemQueryOptions queryOptions);
+
+        Win32FileSystemQueryOptions QueryOptions{ get; };
+
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector< String > > EnumerateAsync();
+
+        event FileSystemChangedEventHandler FileSystemChanged;
+    }
+}
