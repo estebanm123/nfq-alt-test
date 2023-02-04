@@ -35,6 +35,6 @@ namespace NfqApp
             m_window.Activate();
         }
 
-        private MainWindow m_window;
+        private MainWindow? m_window;
     }
 }

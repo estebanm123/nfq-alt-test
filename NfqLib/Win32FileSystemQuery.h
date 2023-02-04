@@ -8,14 +8,17 @@ namespace winrt::NfqLib::implementation
     {
         Win32FileSystemQuery(const Win32FileSystemQueryOptions& queryOptions);
 
-        winrt::event_token FileSystemChanged(FileSystemChangedEventHandler const& handler) { return m_fileSystemChangede.add(handler); }
-        void FileSystemChanged(winrt::event_token const& token) { m_fileSystemChangede.remove(token); }
-
         Win32FileSystemQueryOptions QueryOptions();
 
         Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVector<winrt::hstring>> EnumerateAsync();
 
+        winrt::event_token FileSystemChanged(FileSystemChangedEventHandler const& handler) { return m_fileSystemChangede.add(handler); }
+        void FileSystemChanged(winrt::event_token const& token) { m_fileSystemChangede.remove(token); }
+
     private:
+        std::vector<winrt::hstring> FindNextFileEnumerate(const winrt::hstring folderPath, const Windows::Foundation::Collections::IVector<winrt::hstring>& fileTypeFilter);
+        bool IsSupportedFileType(const Windows::Foundation::Collections::IVector<winrt::hstring>& fileTypeFilter, const winrt::hstring& fileType);
+
         Win32FileSystemQueryOptions m_queryOptions;
         winrt::event<FileSystemChangedEventHandler> m_fileSystemChangede;
     };

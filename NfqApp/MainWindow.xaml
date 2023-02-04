@@ -20,7 +20,7 @@
         <TextBlock Text="{x:Bind local:MainWindow.TimeToRetrieveSortToString(TimeToRetrieveSort), Mode=OneWay}" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
         <ListView ItemsSource="{x:Bind FileExplorerSortOrder, Mode=OneWay}">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="lib:FileExplorerSort">
+                <DataTemplate x:DataType="lib:SortOrder">
                     <StackPanel
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"

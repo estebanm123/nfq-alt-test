@@ -15,7 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="FileExplorerHelper.idl" />
-    <Midl Include="FileExplorerSort.idl" />
     <Midl Include="StorageFileQueryBenchmark.idl">
       <Filter>QueryBenchmarkHelpers</Filter>
     </Midl>
@@ -27,6 +26,16 @@
     </Midl>
     <Midl Include="OleDbQueryBenchmark.idl">
       <Filter>QueryBenchmarkHelpers</Filter>
+    </Midl>
+    <Midl Include="SortOrder.idl" />
+    <Midl Include="Win32FileSystemQueryOptions.idl">
+      <Filter>Win32FileSystem</Filter>
+    </Midl>
+    <Midl Include="Win32FileSystemQuery.idl">
+      <Filter>Win32FileSystem</Filter>
+    </Midl>
+    <Midl Include="Win32File.idl">
+      <Filter>Win32FileSystem</Filter>
     </Midl>
   </ItemGroup>
   <ItemGroup>
@@ -41,5 +50,11 @@
     <Filter Include="QueryBenchmarkHelpers">
       <UniqueIdentifier>{efca20fd-80ef-42bc-bf52-93c961eae159}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Win32FileSystem">
+      <UniqueIdentifier>{d0d99837-c697-4723-a80c-c088b1bc6224}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
   </ItemGroup>
 </Project>

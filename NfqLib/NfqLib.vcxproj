@@ -81,7 +81,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <ModuleDefinitionFile>NfqLib.def</ModuleDefinitionFile>
-      <AdditionalDependencies>propsys.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>propsys.lib;shlwapi.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
@@ -120,6 +120,10 @@
       <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="Win32File.h">
+      <DependentUpon>Win32File.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="Win32FileSystemQuery.h">
       <DependentUpon>Win32FileSystemQuery.idl</DependentUpon>
       <SubType>Code</SubType>
@@ -153,6 +157,10 @@
       <DependentUpon>StorageFileQueryBenchmark.idl</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="Win32File.cpp">
+      <DependentUpon>Win32File.idl</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="Win32FileSystemQuery.cpp">
       <DependentUpon>Win32FileSystemQuery.idl</DependentUpon>
       <SubType>Code</SubType>
@@ -175,6 +183,9 @@
       <SubType>Designer</SubType>
     </Midl>
     <Midl Include="StorageFileQueryBenchmark.idl">
+      <SubType>Designer</SubType>
+    </Midl>
+    <Midl Include="Win32File.idl">
       <SubType>Designer</SubType>
     </Midl>
     <Midl Include="Win32FileSystemQuery.idl">

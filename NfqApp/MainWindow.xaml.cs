@@ -8,6 +8,7 @@ using NfqLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -57,6 +58,25 @@ namespace NfqApp
             if (folder != null)
             {
                 DisplaySortColumns(folder);
+                _ = DisplayFiles(folder);
+            }
+        }
+
+        private async Task DisplayFiles(StorageFolder folder)
+        {
+            var sortOrderList = FileExplorerHelper.GetSortColumns(folder.Path);
+
+            var queryOptions = new Win32FileSystemQueryOptions(
+                folderPath: folder.Path,
+                sort: sortOrderList.FirstOrDefault(),
+                fileTypeFilter: Utils.SupportedExtensions,
+                isRecursive: false);
+
+            var query = new Win32FileSystemQuery(queryOptions);
+            var files = await query.EnumerateAsync();
+            foreach (var file in files)
+            {
+                Debug.WriteLine(file);
             }
         }
 
