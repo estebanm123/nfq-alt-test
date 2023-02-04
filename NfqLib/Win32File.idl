@@ -1,0 +1,9 @@
+namespace NfqLib
+{
+    [bindable]
+    [default_interface]
+    runtimeclass Win32File 
+    {
+        Win32File();
+    }
+}
