@@ -43,16 +43,24 @@ namespace winrt::NfqLib::implementation
 		do
 		{
 			winrt::hstring cFileName = findData.cFileName;
-			auto extension = PathFindExtension(cFileName.c_str());
 
-			if (extension != NULL && extension[0] != 0)
+			if (fileTypeFilter != nullptr)
 			{
-				if (IsSupportedFileType(fileTypeFilter, extension))
+				auto extension = PathFindExtension(cFileName.c_str());
+
+				if (extension != NULL && extension[0] != 0)
 				{
-					files.push_back(cFileName);
+					if (IsSupportedFileType(fileTypeFilter, extension))
+					{
+						files.push_back(cFileName);
+					}
 				}
 			}
-		} 
+			else
+			{
+				files.push_back(cFileName);
+			}
+		}
 		while (FindNextFile(handle, &findData));
 
 		FindClose(handle);
