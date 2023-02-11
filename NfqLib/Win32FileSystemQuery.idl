@@ -1,4 +1,6 @@
 import "Win32FileSystemQueryOptions.idl";
+import "Win32File.idl";
+import "SortOrder.idl";
 
 namespace NfqLib
 {
@@ -12,7 +14,8 @@ namespace NfqLib
 
         Win32FileSystemQueryOptions QueryOptions{ get; };
 
-        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector< String > > EnumerateAsync();
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector< Win32File > > EnumerateAsync();
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVector< Win32File > > SortAsync(SortOrder sortOrder);
 
         event FileSystemChangedEventHandler FileSystemChanged;
     }

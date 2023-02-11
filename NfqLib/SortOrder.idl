@@ -1,11 +1,33 @@
 namespace NfqLib
 {
+    enum SortProperty
+    {
+        Name,
+        Date,
+        DateCreated,
+        DateModified,
+        DateTaken,
+        Type,
+        Size,
+        Tags,
+        Dimensions,
+        Rating
+    };
+
+    enum SortDirection
+    {
+        Ascending,
+        Descending
+    };
+
     [bindable]
     [default_interface]
     runtimeclass SortOrder 
     {
-        SortOrder(String propertyKey, Boolean ascending);
+        SortOrder(String propertyKey, Boolean isAscending);
         String PropertyKey{ get; };
-        Boolean Ascending{ get; };
+        SortProperty Property{ get; };
+        SortDirection Direction{ get; };
+        Boolean IsAscending{ get; };
     }
 }

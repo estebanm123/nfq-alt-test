@@ -5,5 +5,16 @@ namespace NfqLib
     runtimeclass Win32File 
     {
         Win32File();
+
+        String Name{ get; };
+        String Path{ get; };
+        String Extension{ get; };
+        String ItemTypeText{ get; };
+
+        Windows.Foundation.DateTime DateCreated{ get; };
+        Windows.Foundation.DateTime DateModified{ get; };
+        Windows.Foundation.DateTime DateTaken{ get; };
+
+        UInt64 Size{ get; };
     }
 }

@@ -6,9 +6,26 @@
 
 namespace winrt::NfqLib::implementation
 {
-    SortOrder::SortOrder(const winrt::hstring& propertyKey, bool ascending):
-        m_propertyKey(propertyKey), m_ascending(ascending)
+    static const std::map<winrt::hstring, SortProperty> s_propertyKeyToSortProperty = 
     {
+        { L"System.ItemNameDisplay", SortProperty::Name },
+        { L"System.ItemDate", SortProperty::Date },
+        { L"System.DateCreated", SortProperty::DateCreated },
+        { L"System.DateModified", SortProperty::DateModified },
+        { L"System.ItemDate Or System.Photo.DateTaken", SortProperty::DateTaken },
+        { L"System.ItemTypeText", SortProperty::Type },
+        { L"System.Size", SortProperty::Size },
+        { L"System.Keywords", SortProperty::Tags },
+        { L"System.Image.Dimensions", SortProperty::Dimensions },
+        { L"System.Rating", SortProperty::Rating }
+    };
+
+    SortOrder::SortOrder(const winrt::hstring& propertyKey, bool isAscending)
+        : m_propertyKey(propertyKey), m_isAscending(isAscending)
+    {
+        m_property = s_propertyKeyToSortProperty.at(propertyKey);
+
+        m_direction = isAscending ? SortDirection::Ascending : SortDirection::Descending;
     }
 
     winrt::hstring SortOrder::PropertyKey()
@@ -16,18 +33,18 @@ namespace winrt::NfqLib::implementation
         return m_propertyKey;
     }
 
-    void SortOrder::PropertyKey(const winrt::hstring& propertyKey)
+    SortProperty SortOrder::Property()
     {
-        m_propertyKey = propertyKey;
+        return m_property;
     }
 
-    bool SortOrder::Ascending()
+    SortDirection SortOrder::Direction()
     {
-        return m_ascending;
+        return m_direction;
     }
 
-    void SortOrder::Ascending(bool ascending)
+    bool SortOrder::IsAscending()
     {
-        m_ascending = ascending;
+        return m_isAscending;
     }
 }

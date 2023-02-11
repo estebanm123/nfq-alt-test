@@ -24,8 +24,8 @@ namespace NfqApp
         [ObservableProperty]
         IStorageItem? activatedItem;
 
-        [ObservableProperty]
-        IList<SortOrder> fileExplorerSortOrder = new List<SortOrder>();
+        //[ObservableProperty]
+        //IList<SortOrder> fileExplorerSortOrder = new List<SortOrder>();
 
         [ObservableProperty]
         TimeSpan timeToRetrieveSort;
@@ -73,11 +73,20 @@ namespace NfqApp
                 isRecursive: false);
 
             var query = new Win32FileSystemQuery(queryOptions);
-            var files = await query.EnumerateAsync();
-            foreach (var file in files)
-            {
-                Debug.WriteLine(file);
-            }
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+            _ = await query.EnumerateAsync();
+            stopwatch.Stop();
+            var enumerateElapsed = stopwatch.ElapsedMilliseconds;
+
+            stopwatch.Reset();
+            stopwatch.Start();
+            var files = await query.SortAsync(queryOptions.Sort);
+            stopwatch.Stop();
+            var sortElapsed = stopwatch.ElapsedMilliseconds;
+
+            var logger = new Logger();
+            logger.Write(folder.Path, $"Time elapsed: enumerating {enumerateElapsed}ms + sorting {sortElapsed}ms = {enumerateElapsed + sortElapsed}ms.");
         }
 
         private void DisplaySortColumns(StorageFolder? folder)
@@ -86,7 +95,8 @@ namespace NfqApp
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                FileExplorerSortOrder = FileExplorerHelper.GetSortColumns(folder.Path);
+                // FileExplorerSortOrder = FileExplorerHelper.GetSortColumns(folder.Path);
+                FileExplorerHelper.GetSortColumns(folder.Path);
                 stopwatch.Stop();
                 TimeToRetrieveSort = stopwatch.Elapsed;
             }

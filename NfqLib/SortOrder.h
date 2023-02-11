@@ -6,17 +6,18 @@ namespace winrt::NfqLib::implementation
 {
     struct SortOrder : SortOrderT<SortOrder>
     {
-        SortOrder(const winrt::hstring& propertyKey, bool ascending);
+        SortOrder(const winrt::hstring& propertyKey, bool isAscending);
 
         winrt::hstring PropertyKey();
-        void PropertyKey(const winrt::hstring& propertyKey);
-
-        bool Ascending();
-        void Ascending(bool ascending);
+        SortProperty Property();
+        SortDirection Direction();
+        bool IsAscending();
 
     private:
         winrt::hstring m_propertyKey;
-        bool m_ascending{ true };
+        SortProperty m_property;
+        SortDirection m_direction;
+        bool m_isAscending;
     };
 }
 
