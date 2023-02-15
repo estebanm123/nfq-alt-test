@@ -4,35 +4,43 @@
 
 namespace winrt::NfqLib::implementation
 {
-    Windows::Foundation::Collections::IVector<SortOrder> FileExplorerHelper::GetSortColumns(const winrt::hstring& folderPath)
+    Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVector<SortOrder>> FileExplorerHelper::GetSortColumnsAsync(winrt::hstring folderPath)
     {
-        std::vector<winrt::com_ptr<IWebBrowserApp>> webBrowserApps = GetWebBrowserAppsOrderedByZOrder();
-        winrt::com_ptr<IFolderView2> folderView2 = GetFolderView(webBrowserApps, folderPath);
-
-        int columnCount;
-        folderView2->GetSortColumnCount(&columnCount);
-        if (columnCount > 64)
-        {
-            columnCount = 64;
-        }
-
-        SORTCOLUMN columns[64];
-        folderView2->GetSortColumns(columns, columnCount);
-
         Windows::Foundation::Collections::IVector<SortOrder> sortColumns = winrt::single_threaded_vector<SortOrder>();
-        for (int i = 0; i < columnCount; i++)
+
+        try
         {
-            bool ascending = columns[0].direction > 0 ? true : false;
+            std::vector<winrt::com_ptr<IWebBrowserApp>> webBrowserApps = GetWebBrowserAppsOrderedByZOrder();
+            winrt::com_ptr<IFolderView2> folderView2 = GetFolderView(webBrowserApps, folderPath);
 
-            PWSTR sortProperty;
-            PSGetNameFromPropertyKey(columns[0].propkey, &sortProperty);
-            winrt::hstring propertyKey{ sortProperty };
+            int columnCount;
+            folderView2->GetSortColumnCount(&columnCount);
+            if (columnCount > 64)
+            {
+                columnCount = 64;
+            }
 
-            auto sortOrder = SortOrder(propertyKey, ascending);
-            sortColumns.Append(sortOrder);
+            SORTCOLUMN columns[64];
+            folderView2->GetSortColumns(columns, columnCount);
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                bool ascending = columns[0].direction > 0 ? true : false;
+
+                PWSTR sortProperty;
+                PSGetNameFromPropertyKey(columns[0].propkey, &sortProperty);
+                winrt::hstring propertyKey{ sortProperty };
+
+                auto sortOrder = SortOrder(propertyKey, ascending);
+                sortColumns.Append(sortOrder);
+            }
+        }
+        catch (winrt::hresult_error const& exception)
+        {
+            sortColumns.Clear();
         }
 
-        return sortColumns;
+        co_return sortColumns;
     }
 
     winrt::com_ptr<IFolderView2> FileExplorerHelper::GetFolderView(const std::vector<winrt::com_ptr<IWebBrowserApp>>& webBrowserApps, const winrt::hstring& folderPath)
@@ -48,6 +56,7 @@ namespace winrt::NfqLib::implementation
             winrt::com_ptr<IShellBrowser> shellBrowser;
             winrt::check_hresult(serviceProvider->QueryService(SID_STopLevelBrowser, IID_IShellBrowser, shellBrowser.put_void()));
             HWND shellBrowserHandle;
+
             winrt::check_hresult(shellBrowser->GetWindow(&shellBrowserHandle));
             auto activeTab = GetActiveTab(rootHwnd);
             if (activeTab == shellBrowserHandle)

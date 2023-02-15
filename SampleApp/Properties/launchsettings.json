@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "SampleApp (Package)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
+    },
+    "SampleApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

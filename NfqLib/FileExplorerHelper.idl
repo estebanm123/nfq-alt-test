@@ -5,6 +5,6 @@ namespace NfqLib
     [default_interface]
     runtimeclass FileExplorerHelper
     {
-        static Windows.Foundation.Collections.IVector<SortOrder> GetSortColumns(String folderPath);
+        static Windows.Foundation.IAsyncOperation< Windows.Foundation.Collections.IVector<SortOrder> > GetSortColumnsAsync(String folderPath);
     }
 }

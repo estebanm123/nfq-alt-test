@@ -3,7 +3,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using NfqLib;
 using System;
 using System.Collections.Generic;
@@ -24,8 +23,8 @@ namespace NfqApp
         [ObservableProperty]
         IStorageItem? activatedItem;
 
-        //[ObservableProperty]
-        //IList<SortOrder> fileExplorerSortOrder = new List<SortOrder>();
+        [ObservableProperty]
+        IList<SortOrder> fileExplorerSortOrder = new List<SortOrder>();
 
         [ObservableProperty]
         TimeSpan timeToRetrieveSort;
@@ -48,7 +47,7 @@ namespace NfqApp
             if (ActivatedItem is IStorageItem2 storageItem2)
             {
                 var parentFolder = await storageItem2.GetParentAsync();
-                DisplaySortColumns(parentFolder);
+                await DisplaySortColumns(parentFolder);
             }
         }
 
@@ -57,14 +56,14 @@ namespace NfqApp
             StorageFolder folder = await PickFolderAsync();
             if (folder != null)
             {
-                DisplaySortColumns(folder);
+                await DisplaySortColumns(folder);
                 _ = DisplayFiles(folder);
             }
         }
 
         private async Task DisplayFiles(StorageFolder folder)
         {
-            var sortOrderList = FileExplorerHelper.GetSortColumns(folder.Path);
+            var sortOrderList = await FileExplorerHelper.GetSortColumnsAsync(folder.Path);
 
             var queryOptions = new Win32FileSystemQueryOptions(
                 folderPath: folder.Path,
@@ -89,14 +88,14 @@ namespace NfqApp
             logger.Write(folder.Path, $"Time elapsed: enumerating {enumerateElapsed}ms + sorting {sortElapsed}ms = {enumerateElapsed + sortElapsed}ms.");
         }
 
-        private void DisplaySortColumns(StorageFolder? folder)
+        private async Task DisplaySortColumns(StorageFolder? folder)
         {
             if (folder != null)
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                // FileExplorerSortOrder = FileExplorerHelper.GetSortColumns(folder.Path);
-                FileExplorerHelper.GetSortColumns(folder.Path);
+                FileExplorerSortOrder = await FileExplorerHelper.GetSortColumnsAsync(folder.Path);
+                await FileExplorerHelper.GetSortColumnsAsync(folder.Path);
                 stopwatch.Stop();
                 TimeToRetrieveSort = stopwatch.Elapsed;
             }

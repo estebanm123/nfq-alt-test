@@ -16,7 +16,7 @@
         VerticalAlignment="Center"
         Orientation="Vertical">
         <Button x:Name="OpenFolderButton" Click="OpenFolderButton_Click">Open folder</Button>
-        <!--<TextBlock Text="Sort order:" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
+        <TextBlock Text="Sort order:" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
         <TextBlock Text="{x:Bind local:MainWindow.TimeToRetrieveSortToString(TimeToRetrieveSort), Mode=OneWay}" Visibility="{x:Bind local:MainWindow.HasSortOrder(FileExplorerSortOrder), Mode=OneWay}" />
         <ListView ItemsSource="{x:Bind FileExplorerSortOrder, Mode=OneWay}">
             <ListView.ItemTemplate>
@@ -26,10 +26,10 @@
                         VerticalAlignment="Center"
                         Orientation="Vertical">
                         <TextBlock Text="{x:Bind PropertyKey}" />
-                        <TextBlock Text="{x:Bind local:MainWindow.AscendingToString(Ascending)}" />
+                        <TextBlock Text="{x:Bind local:MainWindow.AscendingToString(IsAscending)}" />
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>-->
+        </ListView>
     </StackPanel>
 </Window>

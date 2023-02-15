@@ -68,6 +68,8 @@ namespace winrt::NfqLib::implementation
 				std::sort(std::execution::par_unseq, m_files.begin(), m_files.end(), sortOrder.IsAscending() ? &Win32FileSystemQuery::CompareByRatingAscending : &Win32FileSystemQuery::CompareByRatingDescending);
 				break;
 			default:
+				// Default is sorting by name
+				std::sort(std::execution::par_unseq, m_files.begin(), m_files.end(), sortOrder.IsAscending() ? &Win32FileSystemQuery::CompareByNameAscending : &Win32FileSystemQuery::CompareByNameDescending);
 				break;
 		}
 

@@ -8,7 +8,7 @@ namespace winrt::NfqLib::implementation
 {
     struct FileExplorerHelper : FileExplorerHelperT<FileExplorerHelper>
     {
-        static Windows::Foundation::Collections::IVector<SortOrder> GetSortColumns(const winrt::hstring& folderPath);
+        static Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVector<SortOrder>> GetSortColumnsAsync(winrt::hstring folderPath);
 
     private:
         static winrt::com_ptr<IFolderView2> GetFolderView(const std::vector<winrt::com_ptr<IWebBrowserApp>>& webBrowserApps, const winrt::hstring& folderPath);
@@ -16,6 +16,7 @@ namespace winrt::NfqLib::implementation
         static uint32_t GetZOrder(HWND hWnd);
         static HWND GetActiveTab(HWND hwnd);
 
+        winrt::apartment_context m_uiThread;
     };
 }
 
