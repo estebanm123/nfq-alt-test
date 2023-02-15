@@ -38,6 +38,8 @@ namespace winrt::NfqLib::implementation
 
 		if (sortOrder == nullptr)
 		{
+			// Default is sorting by name
+			std::sort(std::execution::par_unseq, m_files.begin(), m_files.end(), sortOrder.IsAscending() ? &Win32FileSystemQuery::CompareByNameAscending : &Win32FileSystemQuery::CompareByNameDescending);
 			co_return single_threaded_vector<NfqLib::Win32File>(std::move(m_files));
 		}
 
@@ -169,32 +171,50 @@ namespace winrt::NfqLib::implementation
 
 	bool Win32FileSystemQuery::CompareByDateCreatedAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateCreated());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateCreated());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 < seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByDateCreateDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateCreated());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateCreated());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 > seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByDateModifiedAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateModified());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateModified());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 < seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByDateModifiedDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateModified());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateModified());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 > seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByDateTakenAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateTaken());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateTaken());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 < seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByDateTakenDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		auto seconds1 = std::chrono::time_point_cast<std::chrono::seconds>(item1.DateTaken());
+		auto seconds2 = std::chrono::time_point_cast<std::chrono::seconds>(item2.DateTaken());
+
+		return seconds1 == seconds2 ? CompareByNameAscending(item1, item2) : seconds1 > seconds2;
 	}
 
 	bool Win32FileSystemQuery::CompareByTypeAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
@@ -209,12 +229,12 @@ namespace winrt::NfqLib::implementation
 
 	bool Win32FileSystemQuery::CompareBySizeAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		return item1.Size() < item2.Size();
 	}
 
 	bool Win32FileSystemQuery::CompareBySizeDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
-		return true;
+		return item1.Size() > item2.Size();
 	}
 
 	bool Win32FileSystemQuery::CompareByTagsAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)

@@ -42,8 +42,8 @@ namespace winrt::NfqLib::implementation
         static bool CompareByDimensionsDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2);
         static bool CompareByRatingAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2);
         static bool CompareByRatingDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2);
-        static bool Win32FileSystemQuery::CompareNameAsWCharAscending(const wchar_t* item1Name, const wchar_t* item2Name);
-        static bool Win32FileSystemQuery::CompareNameAsWCharDescending(const wchar_t* item1Name, const wchar_t* item2Name);
+        static bool CompareNameAsWCharAscending(const wchar_t* item1Name, const wchar_t* item2Name);
+        static bool CompareNameAsWCharDescending(const wchar_t* item1Name, const wchar_t* item2Name);
 
         Win32FileSystemQueryOptions m_queryOptions;
         winrt::event<FileSystemChangedEventHandler> m_fileSystemChangede;
