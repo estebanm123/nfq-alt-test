@@ -13,6 +13,11 @@ namespace winrt::NfqLib::implementation
             std::vector<winrt::com_ptr<IWebBrowserApp>> webBrowserApps = GetWebBrowserAppsOrderedByZOrder();
             winrt::com_ptr<IFolderView2> folderView2 = GetFolderView(webBrowserApps, folderPath);
 
+            if (folderView2 == nullptr)
+            {
+                co_return sortColumns;
+            }
+
             int columnCount;
             folderView2->GetSortColumnCount(&columnCount);
             if (columnCount > 64)
@@ -35,7 +40,7 @@ namespace winrt::NfqLib::implementation
                 sortColumns.Append(sortOrder);
             }
         }
-        catch (winrt::hresult_error const& exception)
+        catch (...)
         {
             sortColumns.Clear();
         }

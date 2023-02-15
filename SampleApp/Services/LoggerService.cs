@@ -37,7 +37,7 @@ public partial class LoggerService : ObservableObject
         try
         {
             using var streamWriter = File.AppendText(LogFilePath);
-            streamWriter.Write($"\r\nLog Entry");
+            streamWriter.WriteLine($"\r\nLog Entry");
             streamWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} {DateTime.Now.ToLongDateString()}");
             streamWriter.WriteLine($"{LogBuilder}");
             streamWriter.WriteLine("----------------------------------------------------");
@@ -49,7 +49,7 @@ public partial class LoggerService : ObservableObject
 
     public void Log(string logMessage)
     {
-        Logs.Add($"{DateTime.Now.ToLongTimeString()} - {logMessage}");
+        Logs.Insert(0, $"{DateTime.Now.ToLongTimeString()} - {logMessage}");
         LogBuilder.AppendLine($" - {logMessage}");
     }
 

@@ -4,11 +4,12 @@
 #include "Win32FileSystemQuery.g.cpp"
 #endif
 
+#include <cwctype>
 #include <execution>
 #include <unordered_set>
+#include <Win32File.h>
 
 #include "shlwapi.h"
-#include <Win32File.h>
 
 namespace winrt::NfqLib::implementation
 {
@@ -34,6 +35,11 @@ namespace winrt::NfqLib::implementation
 	Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVector<NfqLib::Win32File>> Win32FileSystemQuery::SortAsync(NfqLib::SortOrder sortOrder)
 	{
 		co_await resume_background();
+
+		if (sortOrder == nullptr)
+		{
+			co_return single_threaded_vector<NfqLib::Win32File>(std::move(m_files));
+		}
 
 		switch (sortOrder.Property())
 		{
@@ -107,7 +113,10 @@ namespace winrt::NfqLib::implementation
 				if (path.has_extension())
 				{
 					auto extension = path.extension();
-					if (fileTypeFilterSet.find(extension) != fileTypeFilterSet.end())
+					std::wstring lowerExtension(extension.c_str());
+					std::transform(lowerExtension.begin(), lowerExtension.end(), lowerExtension.begin(), std::towlower);
+
+					if (fileTypeFilterSet.find(lowerExtension) != fileTypeFilterSet.end())
 					{
 						m_files.push_back(*win32File);
 					}
@@ -138,12 +147,12 @@ namespace winrt::NfqLib::implementation
 		return false;
 	}
 
-	bool Win32FileSystemQuery::CompareByNameAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
+	bool Win32FileSystemQuery::CompareByNameDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
 		return CompareNameAsWCharAscending(item1.Name().c_str(), item2.Name().c_str());
 	}
 
-	bool Win32FileSystemQuery::CompareByNameDescending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
+	bool Win32FileSystemQuery::CompareByNameAscending(const NfqLib::Win32File& item1, const NfqLib::Win32File& item2)
 	{
 		return CompareNameAsWCharDescending(item1.Name().c_str(), item2.Name().c_str());
 	}
