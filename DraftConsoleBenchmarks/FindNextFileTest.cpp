@@ -56,8 +56,6 @@ void executeWin32MediaLoadingAltTest(
 	printf("Creating shell item: %lu us", toUs(postShellItemInitT - preShellItemInitT));
 }
 
-
-
 void executeWin32MediaLoadingTest(
 	uint32_t activatedFileIdx, 
 	std::wstring const& activatedFilePath, 
@@ -337,9 +335,9 @@ std::vector<WIN32_FIND_DATA> executeQueryTest(std::wstring searchPath)
 		[](auto const& a, auto const& b) { return fileTimeTo100Ns(a.ftCreationTime) < fileTimeTo100Ns(b.ftCreationTime); });
 	auto loop2DoneT = Clock::now();
 
-	printf("Loop: %lu\n", toMs(doneT - preloopT));
-	printf("Loop w/ initial find: %lu\n", toMs(doneT - preFindFirstFileT));
-	printf("Sorting time: %lu\n", toMs(loop2DoneT - preloop2T));
+	printf("Loop: %lu ms\n", toMs(doneT - preloopT));
+	printf("Loop w/ initial find: %lu ms\n", toMs(doneT - preFindFirstFileT));
+	printf("Sorting time: %lu ms\n", toMs(loop2DoneT - preloop2T));
 	printf("FileCount: %lu\n", files.size());
 
 	return files;
@@ -349,15 +347,15 @@ void executeFindNextFileTest(std::wstring searchPath)
 {
 	auto files = executeQueryTest(searchPath);
 
-	std::replace(searchPath.begin(), searchPath.end(), '/', '\\');
+	//std::replace(searchPath.begin(), searchPath.end(), '/', '\\');
 	// TODO: put in loop choosing more random idxs
-	auto randActivatedFileIdx = files.size() / 2;
-	auto activatedFileData = files[randActivatedFileIdx]; // use a 'random' file to simulate the activated file
-	auto activatedFilePath = searchPath + L"\\" + activatedFileData.cFileName;
-	printf("\n");
-	printf("Test activatd file: %ls\n", activatedFilePath.c_str());
-	executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files, true).get();
-	printf("\n");
+	//auto randActivatedFileIdx = files.size() / 2;
+	//auto activatedFileData = files[randActivatedFileIdx]; // use a 'random' file to simulate the activated file
+	//auto activatedFilePath = searchPath + L"\\" + activatedFileData.cFileName;
+	//printf("\n");
+	//printf("Test activatd file: %ls\n", activatedFilePath.c_str());
+	//executeStorageFileMediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files, true).get();
+	//printf("\n");
 	//executeWin32MediaLoadingTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 	//executeWin32MediaLoadingAltTest(randActivatedFileIdx, activatedFilePath, searchPath, files);
 }
