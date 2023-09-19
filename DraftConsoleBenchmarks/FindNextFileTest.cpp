@@ -25,6 +25,7 @@ struct TestImageProps
 	uint32_t height;
 	uint64_t dateTaken;
 	uint64_t thumbCacheId;
+	uint32_t providerId;
 };
 
 
@@ -127,7 +128,7 @@ void executeWin32MediaLoadingTest(
 	hrGetValue = propStore->GetValue(PKEY_StorageProviderId, &propvarValue);
 	if (SUCCEEDED(hrGetValue))
 	{
-		props.thumbCacheId = propvarValue.uintVal;
+		props.providerId = propvarValue.uintVal;
 		PropVariantClear(&propvarValue);
 	}
 	auto postStorageProviderPropFetchT = Clock::now();
